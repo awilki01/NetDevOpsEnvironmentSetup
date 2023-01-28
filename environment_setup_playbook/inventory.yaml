@@ -1,0 +1,14 @@
+[controlnodes]
+ubuntu-vm1 ansible_host=ubuntu-vm1.mylab.com
+
+
+[all:vars]
+ansible_connection=ssh
+ansible_user=labuser
+ansible_ssh_pass=password123
+jenkins_secret=8d3cfe031bc60f280d4c756cb0aac05660319e5f534c084265a32c1f476f5fd5
+
+
+
+
+

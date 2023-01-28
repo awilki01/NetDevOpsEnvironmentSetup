@@ -1,0 +1,12 @@
+[controlnodes]
+debian-vm1 ansible_host=debian-vm1.mylab.com
+
+
+[all:vars]
+ansible_connection=ssh
+ansible_user=labuser
+ansible_ssh_pass=password123
+
+
+
+

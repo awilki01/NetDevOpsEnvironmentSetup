@@ -1,0 +1,6 @@
+services:
+  jenkins_docker_agent:
+    container_name: jenkins-agent
+    image: jenkins-agent
+    build:
+      context: ./
