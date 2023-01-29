@@ -1,5 +1,5 @@
 [controlnodes]
-debian-vm1 ansible_host=debian-vm1.mylab.com
+ubuntu-vm2 ansible_host=ubuntu-vm2.mylab.com
 
 
 [all:vars]
