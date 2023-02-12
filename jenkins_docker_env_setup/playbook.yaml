@@ -1,0 +1,122 @@
+- hosts: all
+  tasks:
+#    - name: Create directory for gitlab
+#      ansible.builtin.file:
+#        path: /srv/gitlab
+#        state: directory
+#      become: yes
+
+    - name: Set environment variables in .bashrc for profile
+      ansible.builtin.lineinfile:
+        path: ~/.profile
+        line: export GITLAB_HOME=/srv/gitlab
+        state: present
+
+    - name: Create Docker Network
+      ansible.builtin.docker_network:
+        name: NetAutomation
+
+#    - name: Create Gitlab-CE Container
+#      docker_container:
+#        name: gitlab_ce
+#        hostname: gitlab-ce.mylab.com
+#        image: gitlab/gitlab-ce:latest
+#        networks:
+#          - name: NetAutomation
+#            aliases:
+#              - gitlab_ce
+#        published_ports:
+#          - 9443:443
+#          - 9080:80
+          #- 8022:22
+#        volumes:
+#          - /srv/gitlab/config:/etc/gitlab
+#          - /srv/gitlab/logs:/var/log/gitlab
+#          - /srv/gitlab/data:/var/opt/gitlab
+#        shm_size: 256m
+#        state: started
+#      become: yes
+
+    - name: Ensure Jenkins directory on host
+      file:
+        state: directory
+        owner: 1000
+        group: 1000
+        path: /share/jenkins
+      become: yes
+
+    - name: Ensure Jenkins Agent directory on host
+      file:
+        state: directory
+        owner: 1000
+        group: 1000
+        path: /share/jenkins_agent1
+      become: yes
+
+    - name: Create Jenkins Container
+      docker_container:
+        name: jenkins
+        hostname: jenkins.mylab.com
+        image: jenkins/jenkins:latest
+        networks:
+          - name: NetAutomation
+            aliases:
+              - gitlab_ce
+        published_ports:
+          - 8080:8080
+          - 50000:50000
+        volumes:
+          - /share/jenkins:/var/jenkins_home
+        state: started
+        recreate: no
+      become: yes
+
+#    - name: Wait 10 seconds for Jenkins container to run
+#      ansible.builtin.pause:
+#        seconds: 10
+
+#    - name: Ensure Jenkins main container is up and be available
+#      wait_for:
+#        host: jenkins.mylab.com
+#        port: 8080
+
+#    - name: Pull Jenkins Inbound Agent Docker Image
+#      community.docker.docker_image:
+#        name: jenkins/inbound-agent
+#        source: pull
+#      become: yes
+
+#    - name: Create Jenkins Inbound Agent Docker Container
+#      docker_container:
+#        name: jenkins_agent
+#        image: jenkins/inbound-agent:latest
+#        volumes:
+#         - /share/jenkins_agent1:/home/jenkins
+#        state: started
+#        recreate: no
+#      become: yes
+
+
+#    - name: Start Jenkins Inbound Agent Docker Container
+#      shell: |
+#        sudo docker run -d --init jenkins/inbound-agent \
+#                        -url http://jenkins.mylab.com:8080 \
+#                        {{ jenkins_secret }} NetworkAutomation_Node 
+#      become: yes
+
+    - name: Create Jenkins Agent Container
+      docker_container:
+        name: jenkins-agent1
+        hostname: jenkins-agent1.mylab.com
+        image: jenkins-agent
+        networks:
+          - name: NetAutomation
+            aliases:
+              - gitlab_ce
+        published_ports:
+          - "2022:22"
+        volumes:
+          - /share/jenkins_agent1:/home/jenkins
+        state: started
+        recreate: no
+      become: yes
