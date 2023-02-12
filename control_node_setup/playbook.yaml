@@ -27,6 +27,10 @@
           - python3-pip
           - virtualenv
           - python3-setuptools
+          - sshpass
+          - openssh-server
+          - python-is-python3
+          - ansible
         state: latest
         update_cache: true
 
