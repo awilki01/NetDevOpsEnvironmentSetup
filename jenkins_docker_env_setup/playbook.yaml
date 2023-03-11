@@ -29,7 +29,7 @@
         networks:
           - name: NetAutomation
             aliases:
-              - jenkins
+              - jenkins_net
         published_ports:
           - 8080:8080
           - 50000:50000
@@ -47,7 +47,7 @@
         networks:
           - name: NetAutomation
             aliases:
-              - jenkins-agent
+              - jenkins_net
         published_ports:
           - "2022:22"
         volumes:
